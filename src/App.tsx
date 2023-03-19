@@ -6,6 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin from "@fullcalendar/interaction";
 import { createEventId, INITIAL_EVENTS } from "./event-utils";
+import timegrid from "@fullcalendar/timegrid";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,13 +46,22 @@ function App() {
     </>
   );
 
-  
+
 
   return (
     <div className="demo-app">
       <div className="demo-app-main">
         <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]}
+          plugins={[dayGridPlugin, timegrid, interactionPlugin]}
+          
+          headerToolbar={{
+            start: "prev,next today",
+            center: "title",
+            end: "dayGridMonth,timeGridWeek,timeGridDay",
+          }}
+
+
+
           initialView="dayGridMonth"
           // 初期イベント追加
           initialEvents={INITIAL_EVENTS}
@@ -70,6 +80,29 @@ function App() {
 
           // カスタマイズした要素を入れられる
           eventContent={renderEventContent}
+          
+
+          // イベント作成中にプレースホルダーとして表示させる
+          selectMirror={true}
+          // 日付の高さを固定
+          dayMaxEvents={true}
+          // 日付をクリックで日付へのリンク
+          navLinks={true}
+          
+          // businessHours={true}
+          // businessHours={{ daysOfWeek: [1, 2, 3, 4, , 5] }}
+          
+
+          // 範囲外の時間をグレーアウトされる。
+          businessHours={{
+            // days of week. an array of zero-based day of week integers (0=Sunday)
+            daysOfWeek: [1, 2, 3, 4, 5],
+            startTime: '18:00',
+            endTime: '21:00'
+          }}
+          
+          // windowサイズが変わった時にリサイズされる。
+          handleWindowResize={true}
           
         />
       </div>
