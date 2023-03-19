@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 // import FullCalendar from "@fullcalendar/react";
 import FullCalendar  from "@fullcalendar/react";
-import { DateSelectArg, EventApi } from "@fullcalendar/core";
+import { DateSelectArg, EventApi, EventClickArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin from "@fullcalendar/interaction";
@@ -29,6 +29,15 @@ function App() {
       });
     }
   }, []);
+
+  const handleEventClick = useCallback((clickInfo: EventClickArg) => {
+    if (
+      window.confirm(`このイベント「${clickInfo.event.title}」を削除しますか`)
+    ) {
+      clickInfo.event.remove();
+    }
+  }, []);
+  
   
 
   return (
@@ -47,6 +56,10 @@ function App() {
           // 編集可能
           selectable={true}
           select={handleDateSelect}
+
+          // 既にあるカレンダーをクリックした時
+          editable={true}
+          eventClick={handleEventClick}
         />
       </div>
     </div>
