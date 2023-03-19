@@ -75,6 +75,14 @@ function App() {
           }}
 
 
+          // 日付セルのフォーマット
+          eventTimeFormat={{ hour: "2-digit", minute: "2-digit" }}
+          // カレンダー全体のフォーマット
+          slotLabelFormat={[{ hour: "2-digit", minute: "2-digit" }]}
+
+          // 現在時刻を赤線で表示する
+          nowIndicator={true}
+
           initialView="dayGridMonth"
           // 初期イベント追加
           initialEvents={INITIAL_EVENTS}
