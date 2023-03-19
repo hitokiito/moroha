@@ -7,7 +7,10 @@ import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin from "@fullcalendar/interaction";
 import { createEventId, INITIAL_EVENTS } from "./event-utils";
 import timegrid from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+
 import { Sidebar } from "./Sidebar";
+
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,12 +66,12 @@ function App() {
       />
       <div className="demo-app-main">
         <FullCalendar
-          plugins={[dayGridPlugin, timegrid, interactionPlugin]}
+          plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,]}
           
           headerToolbar={{
             start: "prev,next today",
             center: "title",
-            end: "dayGridMonth,timeGridWeek,timeGridDay",
+            end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
           }}
 
 
