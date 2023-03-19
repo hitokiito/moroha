@@ -7,6 +7,7 @@ import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin from "@fullcalendar/interaction";
 import { createEventId, INITIAL_EVENTS } from "./event-utils";
 import timegrid from "@fullcalendar/timegrid";
+import { Sidebar } from "./Sidebar";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -15,6 +16,12 @@ function App() {
     console.log("events:", events);  // 確認用
     setCurrentEvents(events);
   }, []);
+
+  const [weekendsVisible, setWeekendsVisible] = useState(true);
+  const handleWeekendsToggle = useCallback(
+    () => setWeekendsVisible(!weekendsVisible),
+    [weekendsVisible]
+  );
 
   const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
     let title = prompt("イベントのタイトルを入力してください。")?.trim();
@@ -50,6 +57,10 @@ function App() {
 
   return (
     <div className="demo-app">
+      <Sidebar
+        toggleWeekEnds={handleWeekendsToggle}
+        weekendsVisible={weekendsVisible}
+      />
       <div className="demo-app-main">
         <FullCalendar
           plugins={[dayGridPlugin, timegrid, interactionPlugin]}
@@ -59,7 +70,6 @@ function App() {
             center: "title",
             end: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
-
 
 
           initialView="dayGridMonth"
@@ -103,6 +113,8 @@ function App() {
           
           // windowサイズが変わった時にリサイズされる。
           handleWindowResize={true}
+
+          weekends={weekendsVisible}
           
         />
       </div>
