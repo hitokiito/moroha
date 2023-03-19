@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 // import FullCalendar from "@fullcalendar/react";
 import FullCalendar  from "@fullcalendar/react";
-import { DateSelectArg, EventApi, EventClickArg } from "@fullcalendar/core";
+import { DateSelectArg, EventApi, EventClickArg, EventContentArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin from "@fullcalendar/interaction";
@@ -38,6 +38,13 @@ function App() {
     }
   }, []);
   
+  const renderEventContent = (eventContent: EventContentArg) => (
+    <>
+      <i>{eventContent.timeText}</i>
+      <i>{eventContent.event.title}</i>
+    </>
+  );
+
   
 
   return (
@@ -60,6 +67,10 @@ function App() {
           // 既にあるカレンダーをクリックした時
           editable={true}
           eventClick={handleEventClick}
+
+          // カスタマイズした要素を入れられる
+          eventContent={renderEventContent}
+          
         />
       </div>
     </div>
