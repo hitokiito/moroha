@@ -10,6 +10,7 @@ import timegrid from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 
 import { Sidebar } from "./Sidebar";
+import Modal from "./Components/block/Modal";
 
 
 function App() {
@@ -41,14 +42,39 @@ function App() {
     }
   }, []);
 
+  const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
+  const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
+  const [modalScroll, setModalScroll] = useState(0); //モーダルを開いた時のスクロール値を取っておく
+
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
-    if (
-      window.confirm(`このイベント「${clickInfo.event.title}」を削除しますか`)
-    ) {
-      clickInfo.event.remove();
-    }
+    setIsModalOpen(true);
+    setModalSelect(clickInfo);
+
+    // console.log(clickInfo.event.title);
+    // console.log(clickInfo.event._def.title);
+    // console.log(clickInfo.event._instance?.range.start);
+
+
+    // if (
+    //   window.confirm(`このイベント「${clickInfo.event.title}」を削除しますか`)
+    // ) {
+    //   clickInfo.event.remove();
+    // }
   }, []);
-  
+
+
+  //モーダルを閉じる
+  const modalClose = () => {
+    setIsModalOpen(false);
+    let body = document.getElementsByTagName("body");
+    body[0].style.top = "0px";
+    body[0].classList.remove("is-fixed");
+    window.scrollTo(0, modalScroll);
+    setModalScroll(0);
+  };
+
+
+
   const renderEventContent = (eventContent: EventContentArg) => (
     <>
       <i>{eventContent.timeText}</i>
@@ -58,12 +84,19 @@ function App() {
 
 
 
+  // 非表示でモーダルを仕込む
   return (
     <div className="demo-app">
       <Sidebar
         toggleWeekEnds={handleWeekendsToggle}
         weekendsVisible={weekendsVisible}
       />
+        <Modal
+          modalStatus={isModalOpen}
+          modalContent={modalSelect}
+          onClick={modalClose}
+        />
+
       <div className="demo-app-main">
         <FullCalendar
           plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,]}
