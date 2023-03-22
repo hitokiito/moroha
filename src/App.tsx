@@ -45,32 +45,17 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
   const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
   const [modalScroll, setModalScroll] = useState(0); //モーダルを開いた時のスクロール値を取っておく
-
+  
+  // これでモーダル開く
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
     setIsModalOpen(true);
     setModalSelect(clickInfo);
-
-    // console.log(clickInfo.event.title);
-    // console.log(clickInfo.event._def.title);
-    // console.log(clickInfo.event._instance?.range.start);
-
-
-    // if (
-    //   window.confirm(`このイベント「${clickInfo.event.title}」を削除しますか`)
-    // ) {
-    //   clickInfo.event.remove();
-    // }
   }, []);
-
 
   //モーダルを閉じる
   const modalClose = () => {
     setIsModalOpen(false);
-    let body = document.getElementsByTagName("body");
-    body[0].style.top = "0px";
-    body[0].classList.remove("is-fixed");
-    window.scrollTo(0, modalScroll);
-    setModalScroll(0);
+
   };
 
 

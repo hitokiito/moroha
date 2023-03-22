@@ -7,7 +7,7 @@ import ModalContent from "../modules/ModalContent";
 
 type Props = {
   modalStatus: boolean;
-  modalContent?: EventClickArg;
+  modalContent: EventClickArg| undefined;
   onClick: any;
 };
 
@@ -21,7 +21,7 @@ export const Modal: React.VFC<Props> = (props) => {
     <div className={props.modalStatus ? "modal is-active" : "modal"}>
       <div className="modal-inner">
         <div className="modal-close" onClick={modalClose}>
-          <IconContext.Provider value={{ size: "20px" }}>
+          <IconContext.Provider value={{ size: "40px" }}>
             <MdClose />
           </IconContext.Provider>
         </div>
