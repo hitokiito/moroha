@@ -1,4 +1,4 @@
-import { EventClickArg } from "@fullcalendar/core";
+import { EventApi, EventClickArg } from "@fullcalendar/core";
 import React from "react";
 
 import { IconContext } from "react-icons";
@@ -7,7 +7,9 @@ import ModalContent from "../modules/ModalContent";
 
 type Props = {
   modalStatus: boolean;
-  modalContent: EventClickArg| undefined;
+  modalContent: EventClickArg | undefined;
+  currentEvents: EventApi[];
+  setCurrentEvents: React.Dispatch<React.SetStateAction<EventApi[]>>;
   onClick: any;
 };
 
@@ -26,7 +28,11 @@ export const Modal: React.VFC<Props> = (props) => {
           </IconContext.Provider>
         </div>
         <div className="modal-content">
-          <ModalContent content={props.modalContent} />
+          <ModalContent
+            content={props.modalContent}
+            currentEvents={props.currentEvents}
+            setCurrentEvents={props.setCurrentEvents}
+          />
         </div>
       </div>
     </div>

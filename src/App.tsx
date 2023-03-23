@@ -9,7 +9,7 @@ import { createEventId, INITIAL_EVENTS } from "./event-utils";
 import timegrid from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 
-import { Sidebar } from "./Sidebar";
+import  Sidebar  from "./Sidebar";
 import Modal from "./Components/block/Modal";
 
 
@@ -48,6 +48,7 @@ function App() {
   
   // これでモーダル開く
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
+    // console.log(clickInfo.event.id);
     setIsModalOpen(true);
     setModalSelect(clickInfo);
   }, []);
@@ -73,13 +74,16 @@ function App() {
   return (
     <div className="demo-app">
       <Sidebar
-        toggleWeekEnds={handleWeekendsToggle}
+        currentEvents={currentEvents}
+        toggleWeekends={handleWeekendsToggle}
         weekendsVisible={weekendsVisible}
       />
         <Modal
-          modalStatus={isModalOpen}
-          modalContent={modalSelect}
-          onClick={modalClose}
+        modalStatus={isModalOpen}
+        modalContent={modalSelect}
+        onClick={modalClose}
+        currentEvents={currentEvents}
+        setCurrentEvents={setCurrentEvents}
         />
 
       <div className="demo-app-main">
