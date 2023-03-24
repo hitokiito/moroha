@@ -21,6 +21,8 @@ export const ModalContent: React.VFC<Props> = (props) => {
   const [endDate, setEndDate] = useState("endDate");
   const [endTime, setEndTime] = useState("endTime");
 
+  const [dateError, setDateError] = useState(false);
+
   useEffect(() => {
     if (content) { 
       setId(content!.event.id ?? "");
@@ -34,6 +36,7 @@ export const ModalContent: React.VFC<Props> = (props) => {
       setEndDate(endDate);
       setEndTime(endTime);
       setAllDay(content.event.allDay);
+      setDateError(false);
     }
   }, [content]);
 
@@ -43,7 +46,6 @@ export const ModalContent: React.VFC<Props> = (props) => {
       <></>
     )
   }
-
 
   // 変更時のイベント作成
   const onEditEvent = (e: any) => {
@@ -98,71 +100,133 @@ export const ModalContent: React.VFC<Props> = (props) => {
     return true;
   }
 
-  // 入力された内容を反映させる
+   // 入力された内容を反映させる
   const handleChange = (event: any) => {
-    switch (event.target.name) {
-      case 'title':
-        setTitle(event.target.value);
-        break;
-      case 'startDate':
-        setStartDate(event.target.value);
-        break;
-      case 'startTime':
-        setStartTime(event.target.value);
-        break;
-      case 'endDate':
-        setEndDate(event.target.value);
-        break;
-      case 'endTime':
-        setEndTime(event.target.value);
-        break;
+    
+    validateDateAndTime(event)
+    // if(validateDateAndTime(event) == true) {
+      // setStateで値が更新されるのは関数が呼び出された後なため、
+      // 受け取った値でチェックしないとダメ
+      switch (event.target.name) {
+        case 'title':
+          setTitle(event.target.value);
+          break;
+        case 'startDate':
+          setStartDate(event.target.value);
+          break;
+        case 'startTime':
+          setStartTime(event.target.value);
+          break;
+        case 'endDate':
+          setEndDate(event.target.value);
+          break;
+        case 'endTime':
+          setEndTime(event.target.value);
+          break;
+      
     }
   };
+
+  // 時刻バリデーション
+  // TODO 先に開始時間を操作したい際に毎回エラーメッセージ出るのが微妙。
+  // 二段階バリデーションをする
+  // 1.問題あれば赤字でエラーメッセージ表示する。
+  // 2.編集確定時にエラー表記する。
+  const validateDateAndTime = (event: any) => {
+    let startDay!: Date
+    let endDay!: Date
+    switch (event.target.name) {
+      case 'startDate':
+        startDay = new Date(event.target.value + "T" + startTime);
+        endDay = new Date(endDate + "T" + endTime);
+        break;
+      case 'startTime':
+        startDay = new Date(startDate + "T" + event.target.value);
+        endDay = new Date(endDate + "T" + endTime);
+        break;
+      case 'endDate':
+        startDay = new Date(startDate + "T" + startTime);
+        endDay = new Date(event.target.value + "T" + endTime);
+        break;
+      case 'endTime':
+        startDay = new Date(startDate + "T" + startTime);
+        endDay = new Date(endDate + "T" + event.target.value);
+        break;
+    }
+    console.log(startDay)
+    console.log(endDay)
+    if (startDay >= endDay) {
+      setDateError(true)
+      // alert("開始時間と終了時間を確認してください。");
+      return false;
+    }
+    setDateError(false)
+    // if (startDay >= endDay) {
+    //   setDateError(true)
+    //   alert("開始時間と終了時間を確認してください。");
+    //   return false;
+    // }
+    return true;
+  }
 
   return (
     <>
       {content ? (
         <>
           <form>
-            <label>
+            <label className={"block"}>
               ID:
-              <input type="text" name="id" value={id} onChange={handleChange} />
+              <input type="text"
+                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+                name="id" value={id} onChange={handleChange} />
             </label>
             <br />
-            <label>
+            <label className={"block"}>
               タイトル
-              <input type="text" name="title" value={title} onChange={handleChange} />
+              <input type="text"
+                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+                name="title" value={title} onChange={handleChange} />
             </label>
             <br />
-            <label>
+          <p className={dateError ? 'text-red-500' : 'invisible'}>開始時間と終了時間を確認してください。</p>
+            <label className={"block"}>
               開始日:
-              <input type="date" name="startDate" value={startDate} onChange={handleChange} />
+              <input type="date"
+                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
+                name="startDate" value={startDate} onChange={handleChange} />
             </label>
             <br />
-            <label>
+            <label className={"block"}>
               開始時間:
-              <input type="time" name="startTime" value={startTime} step="300" onChange={handleChange} />
+              <input type="time"
+                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+                name="startTime" value={startTime} step="300" onChange={handleChange} />
             </label>
             <br />
-            <label>
+            <label className={"block"}>
               終了日:
-              <input type="date" name="endDate" value={endDate} onChange={handleChange} />
+              <input type="date"
+                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}                
+                name="endDate" value={endDate} onChange={handleChange} />
             </label>
             <br />
-            <label>
+            <label className={"block"}>
               終了時間:
-              <input type="time" name="endTime" value={endTime} onChange={handleChange} />
+              <input type="time"
+                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
+                name="endTime" value={endTime} onChange={handleChange} />
             </label>
             <br />
-            <label>
+            <label className={"block"}>
               終日フラグ
-            <input type="checkbox" checked={allDay} 
-              onChange={() => setAllDay(allDay => !allDay) }
-            />
+              <input type="checkbox" checked={allDay}
+                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
+                onChange={() => setAllDay(allDay => !allDay) }
+              />
             </label>
             <br />
-            <button onClick={onDeleteEvent}>削除</button>
-            <button onClick={onEditEvent}>編集</button>
+            <button className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onDeleteEvent}>削除</button>
+            <button disabled={dateError} className={dateError ? 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2 opacity-50 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2' } onClick={onEditEvent}>編集</button>
           </form>
         </>
       ) : (
