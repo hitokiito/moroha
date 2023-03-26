@@ -1,18 +1,14 @@
-import { EventApi, EventClickArg } from "@fullcalendar/core";
+import { EventClickArg } from "@fullcalendar/core";
 import React,{ useState,useEffect,VFC } from "react";
 
 //モーダルの中身
 type Props = {
-  // modalId: string;
   content: EventClickArg | undefined
-  currentEvents: EventApi[]
-  setCurrentEvents:React.Dispatch<React.SetStateAction<EventApi[]>>
-  // content: EventClickArg;
+  modalClose: () => void;
 };
 
 export const ModalContent: React.VFC<Props> = (props) => {
-  const content = props.content;
-  const { currentEvents, setCurrentEvents } = props;
+  const { content, modalClose } = props
   const [id, setId] = useState("");
   const [title, setTitle] = useState("タイトル");
   const [allDay, setAllDay] = useState(false);
@@ -20,7 +16,6 @@ export const ModalContent: React.VFC<Props> = (props) => {
   const [startTime, setStartTime] = useState("startTime");
   const [endDate, setEndDate] = useState("endDate");
   const [endTime, setEndTime] = useState("endTime");
-
   const [dateError, setDateError] = useState(false);
 
   useEffect(() => {
@@ -64,6 +59,7 @@ export const ModalContent: React.VFC<Props> = (props) => {
     if (window.confirm("変更しますか？")) {
       if (editEvent(ev) === true) {
         window.alert("イベントを変更しました。");
+        modalClose();
       }
     } else {
       return;
@@ -76,9 +72,8 @@ export const ModalContent: React.VFC<Props> = (props) => {
     return true;
   }
   
-
   // 削除
-  const onDeleteEvent = (e: any) => {
+  const onDeleteEvent = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.preventDefault();
     deleteConfirmEvent();
     return true;
@@ -88,6 +83,7 @@ export const ModalContent: React.VFC<Props> = (props) => {
     if (window.confirm("削除しますか？")) {
       if (deleteEvent() === true) {
         window.alert("イベントを削除しました。");
+        modalClose();
       } 
     } else {
       return;
@@ -101,8 +97,8 @@ export const ModalContent: React.VFC<Props> = (props) => {
   }
 
    // 入力された内容を反映させる
-  const handleChange = (event: any) => {
-    
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      
     validateDateAndTime(event)
     // if(validateDateAndTime(event) == true) {
       // setStateで値が更新されるのは関数が呼び出された後なため、
@@ -132,7 +128,7 @@ export const ModalContent: React.VFC<Props> = (props) => {
   // 二段階バリデーションをする
   // 1.問題あれば赤字でエラーメッセージ表示する。
   // 2.編集確定時にエラー表記する。
-  const validateDateAndTime = (event: any) => {
+  const validateDateAndTime = (event: React.ChangeEvent<HTMLInputElement>) => {
     let startDay!: Date
     let endDay!: Date
     switch (event.target.name) {

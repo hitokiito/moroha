@@ -1,4 +1,4 @@
-import { EventApi, EventClickArg } from "@fullcalendar/core";
+import { EventClickArg } from "@fullcalendar/core";
 import React from "react";
 
 import { IconContext } from "react-icons";
@@ -7,18 +7,13 @@ import ModalContent from "../modules/ModalContent";
 
 type Props = {
   modalStatus: boolean;
-  modalContent: EventClickArg | undefined;
-  currentEvents: EventApi[];
-  setCurrentEvents: React.Dispatch<React.SetStateAction<EventApi[]>>;
-  onClick: any;
+  content: EventClickArg | undefined;
+  modalClose: () => void;
 };
 
 export const Modal: React.VFC<Props> = (props) => {
-  //モダールを閉じる
-  const modalClose = () => {
-    props.onClick();
-  };
-
+  const { content, modalClose } = props;
+  
   return (
     <div className={props.modalStatus ? "modal is-active" : "modal"}>
       <div className="modal-inner">
@@ -29,9 +24,8 @@ export const Modal: React.VFC<Props> = (props) => {
         </div>
         <div className="modal-content">
           <ModalContent
-            content={props.modalContent}
-            currentEvents={props.currentEvents}
-            setCurrentEvents={props.setCurrentEvents}
+            content={content}
+            modalClose={modalClose}
           />
         </div>
       </div>
