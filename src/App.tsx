@@ -1,9 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FullCalendar  from "@fullcalendar/react";
 import { DateSelectArg, EventApi, EventClickArg, EventContentArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import allLocales from '@fullcalendar/core/locales-all';
-import interactionPlugin from "@fullcalendar/interaction";
+import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
 import { createEventId, INITIAL_EVENTS } from "./event-utils";
 import timegrid from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
@@ -15,7 +15,7 @@ function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
   const handleEvents = useCallback((events: EventApi[]) => {
-    console.log("events:", events);  // 確認用
+    // console.log("events:", events);  // 確認用
     setCurrentEvents(events);
   }, []);
 
@@ -61,6 +61,38 @@ function App() {
     </>
   );
 
+  const initTest = () => {
+    let draggableEl = document.getElementById("external-events");
+    new Draggable(draggableEl!, {
+      itemSelector: ".fc-event",
+      eventData: function (eventEl) {
+        console.log(eventEl);
+        let title = eventEl.getAttribute("title");
+        let id = eventEl.getAttribute("id");
+        // console.log(title);
+        // console.log(id);
+        return {
+          title: title,
+          id: id
+        };
+      }
+    });
+  }
+
+
+  const events = [
+    { title: "Event 100", id: "100" },
+    { title: "Event 101", id: "101" },
+    { title: "Event 103", id: "103" },
+    { title: "Event 104", id: "104" },
+    { title: "Event 105", id: "105" }
+  ]
+
+  useEffect(() => {
+    initTest();
+  },[]);
+
+
   return (
     <div className="demo-app">
       <Sidebar
@@ -73,6 +105,29 @@ function App() {
         content={modalSelect}
         modalClose={modalClose}
       />
+      <div
+        id="external-events"
+        style={{
+          padding: "10px",
+          width: "10%",
+          height: "auto",
+          maxHeight: "-webkit-fill-available"
+        }}
+      >
+        <strong> Events</strong>
+        {events.map((event) => (
+          <div
+            className="fc-event"
+            id={event.id}
+            title={event.title}
+            key={event.id}
+          >
+            <p>{event.id}</p>
+            <p>{event.title}</p>
+          </div>
+        ))}
+      </div>
+
 
       <div className="demo-app-main">
         <FullCalendar
