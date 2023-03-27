@@ -7,6 +7,7 @@ import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
 import { createEventId, INITIAL_EVENTS,DRAG_EVENTS } from "./event-utils";
 import timegrid from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
+import googleCalendarPlugin from '@fullcalendar/google-calendar';
 
 import Sidebar from "./Sidebar";
 import Modal from "./components/block/Modal";
@@ -14,10 +15,10 @@ import Modal from "./components/block/Modal";
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
-  const handleEvents = useCallback((events: EventApi[]) => {
-    console.log("events:", events);  // 確認用
-    setCurrentEvents(events);
-  }, []);
+  // const handleEvents = useCallback((events: EventApi[]) => {
+  //   console.log("events:", events);  // 確認用
+  //   setCurrentEvents(events);
+  // }, []);
 
   const [weekendsVisible, setWeekendsVisible] = useState(true);
   const handleWeekendsToggle = useCallback(
@@ -126,12 +127,9 @@ function App() {
         ))}
       </div>
 
-      
-
-
       <div className="demo-app-main">
         <FullCalendar
-          plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,googleCalendarPlugin]}
+          plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin, googleCalendarPlugin]}
           headerToolbar={{
             start: "prev,next today",
             center: "title",
@@ -177,6 +175,12 @@ function App() {
           weekends={weekendsVisible}
 
           displayEventTime={false}
+
+          googleCalendarApiKey={'apikey'}
+          events={{ googleCalendarId: 'sample@gmail.com' }}
+          // イベントの重複を許す
+          eventOverlap={false}
+
         />
       </div>
     </div>
