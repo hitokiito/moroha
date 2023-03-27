@@ -4,18 +4,18 @@ import { DateSelectArg, EventApi, EventClickArg, EventContentArg } from "@fullca
 import dayGridPlugin from "@fullcalendar/daygrid";
 import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
-import { createEventId, INITIAL_EVENTS } from "./event-utils";
+import { createEventId, INITIAL_EVENTS,DRAG_EVENTS } from "./event-utils";
 import timegrid from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 
-import  Sidebar  from "./Sidebar";
+import Sidebar from "./Sidebar";
 import Modal from "./components/block/Modal";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
   const handleEvents = useCallback((events: EventApi[]) => {
-    // console.log("events:", events);  // 確認用
+    console.log("events:", events);  // 確認用
     setCurrentEvents(events);
   }, []);
 
@@ -66,32 +66,27 @@ function App() {
     new Draggable(draggableEl!, {
       itemSelector: ".fc-event",
       eventData: function (eventEl) {
-        console.log(eventEl);
+        // console.log(eventEl);
+        let id = createEventId();
         let title = eventEl.getAttribute("title");
-        let id = eventEl.getAttribute("id");
-        // console.log(title);
-        // console.log(id);
+        let duration = eventEl.getAttribute("data-duration");
+        console.log(title);
+        console.log(id);
+        console.log(duration);
         return {
           title: title,
-          id: id
+          id: id,
+          duration: duration
         };
       }
     });
   }
 
 
-  const events = [
-    { title: "Event 100", id: "100" },
-    { title: "Event 101", id: "101" },
-    { title: "Event 103", id: "103" },
-    { title: "Event 104", id: "104" },
-    { title: "Event 105", id: "105" }
-  ]
-
+  const DragEvents = DRAG_EVENTS;
   useEffect(() => {
     initTest();
   },[]);
-
 
   return (
     <div className="demo-app">
@@ -109,29 +104,34 @@ function App() {
         id="external-events"
         style={{
           padding: "10px",
-          width: "10%",
+          width: "30%",
           height: "auto",
           maxHeight: "-webkit-fill-available"
         }}
       >
         <strong> Events</strong>
-        {events.map((event) => (
+        {DragEvents.map((dragEvent) => (
           <div
             className="fc-event"
-            id={event.id}
-            title={event.title}
-            key={event.id}
+            // id={event.id}
+            title={dragEvent.title}
+            data-event={dragEvent}
+            data-duration={dragEvent.duration}
+            key={dragEvent.id}
           >
-            <p>{event.id}</p>
-            <p>{event.title}</p>
+            {/* <p>{event.id}</p> */}
+            <p>{dragEvent.title}</p>
+            {/* <p>{event.duration}</p> */}
           </div>
         ))}
       </div>
 
+      
+
 
       <div className="demo-app-main">
         <FullCalendar
-          plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,]}
+          plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,googleCalendarPlugin]}
           headerToolbar={{
             start: "prev,next today",
             center: "title",
@@ -150,7 +150,7 @@ function App() {
           locales={allLocales}
           locale="ja"
           // 起動タイミングを調べる
-          eventsSet={handleEvents}
+          // eventsSet={handleEvents}
           // 編集可能
           selectable={true}
           select={handleDateSelect}
@@ -175,6 +175,8 @@ function App() {
           // windowサイズが変わった時にリサイズされる。
           handleWindowResize={true}
           weekends={weekendsVisible}
+
+          displayEventTime={false}
         />
       </div>
     </div>
