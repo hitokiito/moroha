@@ -27,14 +27,6 @@ const Sidebar: React.VFC<Props> = ({
 }) => (
   <div className="demo-app-sidebar">
     <div className="demo-app-sidebar-section">
-      <h2>操作方法</h2>
-      <ul>
-        <li>日付を選んでイベント作成</li>
-        <li>ドラッグ&amp;ドロップでイベントの長さ変更</li>
-        <li>クリックでイベント削除</li>
-      </ul>
-    </div>
-    <div className="demo-app-sidebar-section">
       <label>
         <input
           type="checkbox"
@@ -43,10 +35,6 @@ const Sidebar: React.VFC<Props> = ({
         />
         週末を表示
       </label>
-    </div>
-    <div className="demo-app-sidebar-section">
-      <h2>予定一覧({currentEvents.length})</h2>
-      <ul>{currentEvents.map(renderSidebarEvent)}</ul>
     </div>
     <DragAndDropArea/>
   </div>
