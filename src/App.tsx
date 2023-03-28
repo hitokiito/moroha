@@ -14,13 +14,16 @@ import Modal from "./components/block/Modal";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleEvents = useCallback((events: EventApi[]) => {
+      console.log("events:", events);  // 確認用
+      setCurrentEvents(events);
+    }, []);
+    
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
-  // const handleEvents = useCallback((events: EventApi[]) => {
-  //   console.log("events:", events);  // 確認用
-  //   setCurrentEvents(events);
-  // }, []);
-
   const [weekendsVisible, setWeekendsVisible] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
+  const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
+
   const handleWeekendsToggle = useCallback(
     () => setWeekendsVisible(!weekendsVisible),
     [weekendsVisible]
@@ -41,9 +44,6 @@ function App() {
     }
   }, []);
 
-  const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
-  const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
-
   // これでモーダル開く
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
     setIsModalOpen(true);
@@ -62,33 +62,6 @@ function App() {
     </>
   );
 
-  const initTest = () => {
-    let draggableEl = document.getElementById("external-events");
-    new Draggable(draggableEl!, {
-      itemSelector: ".fc-event",
-      eventData: function (eventEl) {
-        // console.log(eventEl);
-        let id = createEventId();
-        let title = eventEl.getAttribute("title");
-        let duration = eventEl.getAttribute("data-duration");
-        console.log(title);
-        console.log(id);
-        console.log(duration);
-        return {
-          title: title,
-          id: id,
-          duration: duration
-        };
-      }
-    });
-  }
-
-
-  const DragEvents = DRAG_EVENTS;
-  useEffect(() => {
-    initTest();
-  },[]);
-
   return (
     <div className="demo-app">
       <Sidebar
@@ -101,31 +74,6 @@ function App() {
         content={modalSelect}
         modalClose={modalClose}
       />
-      <div
-        id="external-events"
-        style={{
-          padding: "10px",
-          width: "30%",
-          height: "auto",
-          maxHeight: "-webkit-fill-available"
-        }}
-      >
-        <strong> Events</strong>
-        {DragEvents.map((dragEvent) => (
-          <div
-            className="fc-event"
-            // id={event.id}
-            title={dragEvent.title}
-            data-event={dragEvent}
-            data-duration={dragEvent.duration}
-            key={dragEvent.id}
-          >
-            {/* <p>{event.id}</p> */}
-            <p>{dragEvent.title}</p>
-            {/* <p>{event.duration}</p> */}
-          </div>
-        ))}
-      </div>
 
       <div className="demo-app-main">
         <FullCalendar
@@ -148,7 +96,7 @@ function App() {
           locales={allLocales}
           locale="ja"
           // 起動タイミングを調べる
-          // eventsSet={handleEvents}
+          eventsSet={handleEvents}
           // 編集可能
           selectable={true}
           select={handleDateSelect}
@@ -176,8 +124,8 @@ function App() {
 
           displayEventTime={false}
 
-          googleCalendarApiKey={'apikey'}
-          events={{ googleCalendarId: 'sample@gmail.com' }}
+          // googleCalendarApiKey={'apikey'}
+          // events={{ googleCalendarId: 'sample@gmail.com' }}
           // イベントの重複を許す
           eventOverlap={false}
 

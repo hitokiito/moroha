@@ -1,4 +1,5 @@
 import { EventApi, formatDate } from "@fullcalendar/core";
+import { DragAndDropArea } from "./DragAndDropArea";
 
 interface Props {
   currentEvents: EventApi[];
@@ -47,6 +48,7 @@ const Sidebar: React.VFC<Props> = ({
       <h2>予定一覧({currentEvents.length})</h2>
       <ul>{currentEvents.map(renderSidebarEvent)}</ul>
     </div>
+    <DragAndDropArea/>
   </div>
 );
 
