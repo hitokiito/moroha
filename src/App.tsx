@@ -103,8 +103,10 @@ function App() {
           // 既にあるカレンダーをクリックした時
           editable={true}
           eventClick={handleEventClick}
-          // カスタマイズした要素を入れられる
-          eventContent={renderEventContent}
+
+          // // カスタマイズした要素を入れられる
+          // eventContent={renderEventContent}
+
           // イベント作成中にプレースホルダーとして表示させる
           selectMirror={true}
           // 日付の高さを固定
@@ -112,12 +114,12 @@ function App() {
           // 日付をクリックで日付へのリンク
           navLinks={true}
           // 範囲外の時間をグレーアウトされる。
-          businessHours={{
-            // days of week. an array of zero-based day of week integers (0=Sunday)
-            daysOfWeek: [1, 2, 3, 4, 5],
-            startTime: '18:00',
-            endTime: '21:00'
-          }}
+          // businessHours={{
+          //   // days of week. an array of zero-based day of week integers (0=Sunday)
+          //   daysOfWeek: [1, 2, 3, 4, 5],
+          //   startTime: '18:00',
+          //   endTime: '21:00'
+          // }}
           // windowサイズが変わった時にリサイズされる。
           handleWindowResize={true}
           weekends={weekendsVisible}
