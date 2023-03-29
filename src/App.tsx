@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import FullCalendar  from "@fullcalendar/react";
-import { DateSelectArg, EventApi, EventClickArg, EventContentArg } from "@fullcalendar/core";
+import { DateSelectArg, EventApi, EventClickArg, EventContentArg, EventInput } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import allLocales from '@fullcalendar/core/locales-all';
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
@@ -11,6 +11,7 @@ import googleCalendarPlugin from '@fullcalendar/google-calendar';
 
 import Sidebar from "./Sidebar";
 import Modal from "./components/block/Modal";
+import { GoogleCalendar } from "./GoogleCalendar";
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -23,6 +24,7 @@ function App() {
   const [weekendsVisible, setWeekendsVisible] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
   const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
+  const [initialEvent, setInitialEvent] = useState<EventInput[]>();
 
   const handleWeekendsToggle = useCallback(
     () => setWeekendsVisible(!weekendsVisible),
@@ -74,6 +76,9 @@ function App() {
         content={modalSelect}
         modalClose={modalClose}
       />
+      <GoogleCalendar
+        setInitialEvent={setInitialEvent}
+      />
 
       <div className="demo-app-main">
         <FullCalendar
@@ -83,7 +88,6 @@ function App() {
             center: "title",
             end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
           }}
-
           // 日付セルのフォーマット
           eventTimeFormat={{ hour: "2-digit", minute: "2-digit" }}
           // カレンダー全体のフォーマット
@@ -93,6 +97,9 @@ function App() {
           initialView="dayGridMonth"
           // 初期イベント追加
           initialEvents={INITIAL_EVENTS}
+          // initialEvents={INITIAL_EVENTS}
+
+        
           locales={allLocales}
           locale="ja"
           // 起動タイミングを調べる
