@@ -19,6 +19,7 @@ export const ModalContent: React.VFC<Props> = (props) => {
   const [dateError, setDateError] = useState(false);
 
   useEffect(() => {
+    console.log("ModalContent");
     if (content) { 
       setId(content!.event.id ?? "");
       setTitle(content!.event._def.title ?? "")
