@@ -51,13 +51,50 @@ function App() {
     setIsModalOpen(false);
   };
 
-  const { googleEvents, loading, error } = useGoogleCalendar("@gmail.com", "api");
+
+  // const { googleEvents, loading, error } = useGoogleCalendar("itt.pedro5328@gmail.com", "AIzaSyDt18pk8wCkc5-DlwXAzz_IGTjUHQv9NGY");
+  // const { REACT_APP_GOOGLE_API_KEY, REACT_APP_EMAIL } = process.env;
+
+  const { googleEvents, loading, error } = useGoogleCalendar("itt.pedro5328@gmail.com","AIzaSyDt18pk8wCkc5-DlwXAzz_IGTjUHQv9NGY");
   if (loading) {
     return <div>Loading...</div>;
   }
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+  
+  // const updateEvent = async (eventId: string) => {
+  const updateEvent = async () => {
+    try {
+      // Google Calendar APIを初期化する
+      await gapi.client.init({
+        apiKey: '',
+        clientId: '@gmail.com',
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+        scope: 'https://www.googleapis.com/auth/calendar',
+      });
+  
+      // イベントを取得する
+      const event = await gapi.client.calendar.events.get({
+        calendarId: '',
+        eventId: '',
+      });
+  
+      // サマリーを更新する
+      event.result.summary = "変更";
+  
+      // イベントを更新する
+      await gapi.client.calendar.events.update({
+        calendarId: '',
+        eventId: '',
+        resource: event.result,
+      });
+  
+      console.log('イベントが更新されました。');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="demo-app">
@@ -68,6 +105,7 @@ function App() {
         content={modalSelect}
         modalClose={modalClose}
       />
+      <button className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={updateEvent}>カレンダー更新</button>
       <div className="demo-app-main">
         <FullCalendar
           plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin, googleCalendarPlugin]}
