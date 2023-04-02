@@ -1,5 +1,6 @@
 import { EventClickArg } from "@fullcalendar/core";
 import React,{ useState,useEffect,VFC } from "react";
+import useUpdateEvent from "../../hooks/useUpdateEvent";
 
 //モーダルの中身
 type Props = {
@@ -35,6 +36,27 @@ export const ModalContent: React.VFC<Props> = (props) => {
       setDateError(false);
     }
   }, [content]);
+
+  
+  const { updateEvent, isLoading, error } = useUpdateEvent(content || undefined);
+
+  const onUpdateEvent = async () => {
+    console.log('onUpdateEvent');
+    console.log(isLoading)
+    console.log(error)
+    console.log(content)
+    if (content !== undefined) {
+      // setIsLoading(true);
+      console.log('if');
+      await updateEvent(content!);
+      // setIsLoading(false);
+    }
+  };
+
+
+  
+  // const { updateEvent, isLoading, error } = useUpdateEvent(content!);
+
 
   // TODO エラー回避のため一時的な処理
   if (!content) {
@@ -120,7 +142,6 @@ export const ModalContent: React.VFC<Props> = (props) => {
         case 'endTime':
           setEndTime(event.target.value);
           break;
-      
     }
   };
 
@@ -166,69 +187,65 @@ export const ModalContent: React.VFC<Props> = (props) => {
     return true;
   }
 
+ 
   return (
     <>
-      {content ? (
-        <>
-          <form>
-            <label className={"block"}>
-              ID:
-              <input type="text"
-                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
-                name="id" value={id} onChange={handleChange} />
-            </label>
-            <br />
-            <label className={"block"}>
-              タイトル
-              <input type="text"
-                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
-                name="title" value={title} onChange={handleChange} />
-            </label>
-            <br />
-          <p className={dateError ? 'text-red-500' : 'invisible'}>開始時間と終了時間を確認してください。</p>
-            <label className={"block"}>
-              開始日:
-              <input type="date"
-                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
-                name="startDate" value={startDate} onChange={handleChange} />
-            </label>
-            <br />
-            <label className={"block"}>
-              開始時間:
-              <input type="time"
-                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
-                name="startTime" value={startTime} step="300" onChange={handleChange} />
-            </label>
-            <br />
-            <label className={"block"}>
-              終了日:
-              <input type="date"
-                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}                
-                name="endDate" value={endDate} onChange={handleChange} />
-            </label>
-            <br />
-            <label className={"block"}>
-              終了時間:
-              <input type="time"
-                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
-                name="endTime" value={endTime} onChange={handleChange} />
-            </label>
-            <br />
-            <label className={"block"}>
-              終日フラグ
-              <input type="checkbox" checked={allDay}
-                className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
-                onChange={() => setAllDay(allDay => !allDay) }
-              />
-            </label>
-            <br />
-            <button className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onDeleteEvent}>削除</button>
-            <button disabled={dateError} className={dateError ? 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2 opacity-50 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2' } onClick={onEditEvent}>編集</button>
-          </form>
-        </>
-      ) : (
-        <></>
-      )}
+      <form>
+        <label className={"block"}>
+          ID:
+          <input type="text"
+            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+            name="id" value={id} onChange={handleChange} />
+        </label>
+        <br />
+        <label className={"block"}>
+          タイトル
+          <input type="text"
+            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+            name="title" value={title} onChange={handleChange} />
+        </label>
+        <br />
+      <p className={dateError ? 'text-red-500' : 'invisible'}>開始時間と終了時間を確認してください。</p>
+        <label className={"block"}>
+          開始日:
+          <input type="date"
+            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
+            name="startDate" value={startDate} onChange={handleChange} />
+        </label>
+        <br />
+        <label className={"block"}>
+          開始時間:
+          <input type="time"
+            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+            name="startTime" value={startTime} step="300" onChange={handleChange} />
+        </label>
+        <br />
+        <label className={"block"}>
+          終了日:
+          <input type="date"
+            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}                
+            name="endDate" value={endDate} onChange={handleChange} />
+        </label>
+        <br />
+        <label className={"block"}>
+          終了時間:
+          <input type="time"
+            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
+            name="endTime" value={endTime} onChange={handleChange} />
+        </label>
+        <br />
+        <label className={"block"}>
+          終日フラグ
+          <input type="checkbox" checked={allDay}
+            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
+            onChange={() => setAllDay(allDay => !allDay) }
+          />
+        </label>
+        <br />
+        <button className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onDeleteEvent}>削除</button>
+        <button type="button" className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onUpdateEvent}>カレンダー更新</button>
+        <button disabled={dateError} className={dateError ? 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2 opacity-50 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2' } onClick={onEditEvent}>編集</button>
+      </form>
     </>
   );
 };
