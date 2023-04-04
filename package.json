@@ -23,6 +23,7 @@
     "@types/react-dom": "^18.0.11",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
+    "firebase": "^9.19.1",
     "gapi-script": "^1.2.0",
     "google-auth-library": "^8.7.0",
     "googleapis": "^114.0.0",
