@@ -38,20 +38,20 @@ export const ModalContent: React.VFC<Props> = (props) => {
   }, [content]);
 
   
-  const { updateEvent, isLoading, error } = useUpdateEvent(content || undefined);
+  // const { updateEvent, isLoading, error } = useUpdateEvent(content || undefined);
 
-  const onUpdateEvent = async () => {
-    console.log('onUpdateEvent');
-    console.log(isLoading)
-    console.log(error)
-    console.log(content)
-    if (content !== undefined) {
-      // setIsLoading(true);
-      console.log('if');
-      await updateEvent(content!);
-      // setIsLoading(false);
-    }
-  };
+  // const onUpdateEvent = async () => {
+  //   console.log('onUpdateEvent');
+  //   console.log(isLoading)
+  //   console.log(error)
+  //   console.log(content)
+  //   if (content !== undefined) {
+  //     // setIsLoading(true);
+  //     console.log('if');
+  //     await updateEvent(content!);
+  //     // setIsLoading(false);
+  //   }
+  // };
 
 
   
@@ -243,7 +243,7 @@ export const ModalContent: React.VFC<Props> = (props) => {
         </label>
         <br />
         <button className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onDeleteEvent}>削除</button>
-        <button type="button" className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onUpdateEvent}>カレンダー更新</button>
+        {/* <button type="button" className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onUpdateEvent}>カレンダー更新</button> */}
         <button disabled={dateError} className={dateError ? 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2 opacity-50 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2' } onClick={onEditEvent}>編集</button>
       </form>
     </>
