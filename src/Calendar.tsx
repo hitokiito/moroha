@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import FullCalendar  from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import useFirebaseEventList from "./hooks/useFirebaseEventList";
+import useFirebaseEventList from "./hooks/useFirestoreEventAdd";
 import allLocales from "@fullcalendar/core/locales-all";
 import timegrid from "@fullcalendar/timegrid";
 import { INITIAL_EVENTS, createEventId } from "./event-utils";
@@ -11,55 +11,15 @@ import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import Modal from "./components/block/Modal";
 import Sidebar from "./Sidebar";
 import { EventApiExtended } from "./types/api/googleCalendar";
-import useGetEvents from "./hooks/useGetEvents";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
-import useFirebase from "./hooks/useGetEvents";
+import useFirestoreEvents from "./hooks/useFirestoreEvents";
 
 
 const Calendar = () => {
+  const calendarRef = useRef<FullCalendar>(null!);
   const todayStr = new Date().toISOString().replace(/T.*$/, ""); // YYYY-MM-DD
-
   const [events, setEvents] = useState<EventApiExtended[]>([
-    // { title: "イベント1", start: "2023-04-01" },
-    // { title: "イベント2", start: "2023-04-03" },
-    // { title: "イベント3", start: "2023-04-06" },
-    // {
-    //   id: createEventId(),
-    //   title: "30minutes",
-    //   start: todayStr,
-    //   duration:'00:30',
-    // },
-    // {
-    //   id: createEventId(),
-    //   title: "1hour",
-    //   start: todayStr,
-    //   duration:'01:00'
-    // },
-    // {
-    //   id: createEventId(),
-    //   title: "1.5hour",
-    //   start: todayStr,
-    //   duration:'01:30'
-    // },
-    // {
-    //   id: createEventId(),
-    //   title: "2hour",
-    //   start: todayStr,
-    //   duration:'02:00'
-    // },
-    // {
-    //   id: createEventId(),
-    //   title: "3hour",
-    //   start: todayStr,
-    //   duration:'03:00'
-    // },
-    // {
-    //   id: createEventId(),
-    //   title: "4hour",
-    //   start: todayStr,
-    //   duration:'04:00'
-    // },
   ]);
 
   const [weekendsVisible, setWeekendsVisible] = useState(true);
@@ -67,8 +27,27 @@ const Calendar = () => {
   // Googleカレンダー登録簡易ロジック
   const { handleEventAdd } = useFirebaseEventList();
   const handleButtonClick = useCallback(() => {
-    console.log(events);
-    handleEventAdd(events);
+    const calendarApi = calendarRef.current.getApi();
+    // 格納用の型を宣言
+    const localEvents :EventApiExtended[] = [];
+    // console.log("★★");
+    let localEventsList = calendarApi.getEvents();
+    localEventsList?.forEach((event) => {
+      // eventsからeventを取り出し、EventApiExtended型にする。
+      let extendedEvent: EventApiExtended = {
+        id: event.id,
+        title: event.title,
+        start: event.start?.toISOString(),
+        end: event.end?.toISOString(),
+        allDay: event.allDay,
+        backgroundColor: event.backgroundColor,
+        borderColor: event.borderColor,
+        extendedProps: event.extendedProps,
+      };
+      localEvents.push(extendedEvent);
+      console.log(localEvents)
+    });
+    handleEventAdd(localEvents);
   }, []);
   
   // イベント作成
@@ -103,12 +82,22 @@ const Calendar = () => {
     setIsModalOpen(false);
   };
 
+  const { initialEvents,fetchEventsFromFirestore } = useFirestoreEvents("events");
+  
+  useEffect(() => {
 
-  const { iniEvetnt } = useFirebase("events");
+    fetchEventsFromFirestore();
+    console.log("useEffect");
+  }, []);
 
+  // useEffect(() => {
+  //   setEvents(iniEvetnt);
+  // }, []);
+
+  
   return (
     <>
-     <div className="demo-app">
+    <div className="demo-app">
 
       <Modal
         modalStatus={isModalOpen}
@@ -117,16 +106,17 @@ const Calendar = () => {
         />
       <Sidebar
       />
-        <button onClick={handleButtonClick}>現在のイベントを取得</button>
+        <button onClick={handleButtonClick}>現在のイベントを全て登録</button>
         {/* <button onClick={useGetEvents}>DB一覧取得</button> */}
-      <FullCalendar
+        <FullCalendar
+          ref={calendarRef}
           plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,]}
           headerToolbar={{
             start: "prev,next today",
             center: "title",
             end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
           }}
-          events={iniEvetnt}
+          events={initialEvents}
           // events={googleEvents}
           // 日付セルのフォーマット
           eventTimeFormat={{ hour: "2-digit", minute: "2-digit" }}

@@ -5,14 +5,14 @@ import { db } from "../firebase";
 import { EventApiExtended } from "../types/api/googleCalendar";
 
 
-const useFirebaseEventList = () => {
+const useFirestoreEventAdd = () => {
  const [events, setEvents] = useState<EventApiExtended[]>([]);
 
   const handleEventAdd = async (newEvents: EventApiExtended[]) => {
     try {
       console.log(newEvents);
       newEvents?.forEach(async (event) => {
-        console.log("handleEventAdd")
+        // console.log("handleEventAdd")
         const docRef = await addDoc(collection(db, "events"), event);
         console.log("Event added with ID: ", docRef.id);
       });
@@ -24,4 +24,4 @@ const useFirebaseEventList = () => {
   return { events, handleEventAdd };
 };
 
-export default useFirebaseEventList;
+export default useFirestoreEventAdd;

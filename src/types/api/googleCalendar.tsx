@@ -17,6 +17,5 @@ export interface EventApiExtended extends Pick<EventApi, "id"> {
   borderColor?: string;
   textColor?: string;
   extendedProps?: any;
-  duration: string;
-  Gid?: string;
+  duration?: string;
 }

@@ -1,152 +1,176 @@
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import FullCalendar  from "@fullcalendar/react";
-import { DateSelectArg, EventApi, EventClickArg, EventContentArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import allLocales from '@fullcalendar/core/locales-all';
-import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
-import { createEventId, INITIAL_EVENTS,DRAG_EVENTS } from "./event-utils";
+import useFirebaseEventList from "./hooks/useFirestoreEventAdd";
+import allLocales from "@fullcalendar/core/locales-all";
 import timegrid from "@fullcalendar/timegrid";
+import { INITIAL_EVENTS, createEventId } from "./event-utils";
+import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import googleCalendarPlugin from '@fullcalendar/google-calendar';
-
-import Sidebar from "./Sidebar";
+import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import Modal from "./components/block/Modal";
-import useGoogleCalendar from "./hooks/useGoogleCalendar";
+import Sidebar from "./Sidebar";
+import { EventApiExtended } from "./types/api/googleCalendar";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "./firebase";
 
-function App() {
-  const [weekendsVisible, setWeekendsVisible] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
-  const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
-  // イベントの配列をuseStateで管理する
-  const [events, setEvents] = useState([]);
-  // FullCalendarのeventsプロパティに渡す関数
-  const handleEvents = useCallback((events: any) => {
-    setEvents(events);
-  }, []);
-  
-  // イベント作成
-  const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
-    let title = prompt("イベントのタイトルを入力してください。")?.trim();
-    let calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect();
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
-      });
-    }
-  }, []);
+const Calendar = () => {
+  // const calendarRef = useRef<FullCalendar>(null!);
+  // // const calendarApi = calendarRef.current.getApi();
 
-  // これでモーダル開く
-  const handleEventClick = useCallback((clickInfo: EventClickArg) => {
-    setIsModalOpen(true);
-    setModalSelect(clickInfo);
-  }, []);
+  // const todayStr = new Date().toISOString().replace(/T.*$/, ""); // YYYY-MM-DD
+  // const [events, setEvents] = useState<EventApiExtended[]>([
+  //   // { title: "イベント1", start: "2023-04-01" },
+  //   // { title: "イベント2", start: "2023-04-03" },
+  //   // { title: "イベント3", start: "2023-04-06" },
+  //   // {
+  //   //   id: createEventId(),
+  //   //   title: "30minutes",
+  //   //   start: todayStr,
+  //   //   duration:'00:30',
+  //   // },
+  //   // {
+  //   //   id: createEventId(),
+  //   //   title: "1hour",
+  //   //   start: todayStr,
+  //   //   duration:'01:00'
+  //   // },
+  //   // {
+  //   //   id: createEventId(),
+  //   //   title: "1.5hour",
+  //   //   start: todayStr,
+  //   //   duration:'01:30'
+  //   // },
+  //   // {
+  //   //   id: createEventId(),
+  //   //   title: "2hour",
+  //   //   start: todayStr,
+  //   //   duration:'02:00'
+  //   // },
+  //   // {
+  //   //   id: createEventId(),
+  //   //   title: "3hour",
+  //   //   start: todayStr,
+  //   //   duration:'03:00'
+  //   // },
+  //   // {
+  //   //   id: createEventId(),
+  //   //   title: "4hour",
+  //   //   start: todayStr,
+  //   //   duration:'04:00'
+  //   // },
+  // ]);
 
-  //モーダルを閉じる
-  const modalClose = () => {
-    setIsModalOpen(false);
-  };
 
+  // const [weekendsVisible, setWeekendsVisible] = useState(true);
 
-  // const { googleEvents, loading, error } = useGoogleCalendar("itt.pedro5328@gmail.com", "AIzaSyDt18pk8wCkc5-DlwXAzz_IGTjUHQv9NGY");
-  // const { REACT_APP_GOOGLE_API_KEY, REACT_APP_EMAIL } = process.env;
+  // // Googleカレンダー登録簡易ロジック
+  // const { handleEventAdd } = useFirebaseEventList();
+  // const handleButtonClick = useCallback(() => {
+  //   const calendarApi = calendarRef.current.getApi();
+  //   // 格納用の型を宣言
+  //   const LocalEvents :EventApiExtended[] = [];
+  //   console.log("★★");
+  //   let events = calendarApi.getEvents();
+  //   // events?.forEach(async (event) => {
+  //   //   // TODO eventsからeventを取り出し、
+  //   //   // EventApiExtended型にする。
+  //   //   // EventApiExtended型にした後
+  //   //   // LocalEventsに追加する
+  //   //   console.log(event.allDay)
+  //   //   console.log(event.id)
+  //   // });
+  //   handleEventAdd(LocalEvents);
+  // }, []);
+  
+  // // イベント作成
+  // const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
+  //   let title = prompt("イベントのタイトルを入力してください。")?.trim();
+  //   let calendarApi = selectInfo.view.calendar;
+  //   calendarApi.unselect();
+  //   if (title) {
+  //     calendarApi.addEvent({
+  //       id: createEventId(),
+  //       title,
+  //       start: selectInfo.startStr,
+  //       end: selectInfo.endStr,
+  //       allDay: selectInfo.allDay,
+  //     });
+  //   }
+  //   // ＋ここでsetEventしないといけない。
+  // }, []);
 
-  const { googleEvents, loading, error } = useGoogleCalendar("itt.pedro5328@gmail.com","AIzaSyDt18pk8wCkc5-DlwXAzz_IGTjUHQv9NGY");
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-  
-  // const updateEvent = async (eventId: string) => {
-  const updateEvent = async () => {
-    try {
-      // Google Calendar APIを初期化する
-      await gapi.client.init({
-        apiKey: '',
-        clientId: '@gmail.com',
-        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-        scope: 'https://www.googleapis.com/auth/calendar',
-      });
-  
-      // イベントを取得する
-      const event = await gapi.client.calendar.events.get({
-        calendarId: '',
-        eventId: '',
-      });
-  
-      // サマリーを更新する
-      event.result.summary = "変更";
-  
-      // イベントを更新する
-      await gapi.client.calendar.events.update({
-        calendarId: '',
-        eventId: '',
-        resource: event.result,
-      });
-  
-      console.log('イベントが更新されました。');
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
+  // const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
+
+  // // 詳細画面表示
+  // // これでモーダル開く
+  // const handleEventClick = useCallback((clickInfo: EventClickArg) => {
+  //   setIsModalOpen(true);
+  //   setModalSelect(clickInfo);
+  // }, []);
+
+  // //モーダルを閉じる
+  // const modalClose = () => {
+  //   setIsModalOpen(false);
+  // };
+  // // firebaseからデータ取得
+  // const { iniEvetnt } = useFirebase("events");
 
   return (
+    <>
     <div className="demo-app">
-      <Sidebar
-      />
-      <Modal
+      {/* <Modal
         modalStatus={isModalOpen}
         content={modalSelect}
         modalClose={modalClose}
-      />
-      <button className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={updateEvent}>カレンダー更新</button>
-      <div className="demo-app-main">
-        <FullCalendar
-          plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin, googleCalendarPlugin]}
-          headerToolbar={{
-            start: "prev,next today",
-            center: "title",
-            end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
-          }}
-          events={googleEvents}
-          // 日付セルのフォーマット
-          eventTimeFormat={{ hour: "2-digit", minute: "2-digit" }}
-          // カレンダー全体のフォーマット
-          slotLabelFormat={[{ hour: "2-digit", minute: "2-digit" }]}
-          // 現在時刻を赤線で表示する
-          nowIndicator={true}
-          // initialView="dayGridMonth"
-          initialView="timeGridWeek"
-          // 初期イベント追加
-          initialEvents={INITIAL_EVENTS}
-          locales={allLocales}
-          locale="ja"
-          // 編集可能
-          selectable={true}
-          select={handleDateSelect}
-          // 既にあるカレンダーをクリックした時
-          editable={true}
-          eventClick={handleEventClick}
-          // イベント作成中にプレースホルダーとして表示させる
-          selectMirror={true}
-          // 日付の高さを固定
-          dayMaxEvents={true}
-          // 日付をクリックで日付へのリンク
-          navLinks={true}
-          handleWindowResize={true}
-          weekends={weekendsVisible}
-          displayEventTime={false}
-          eventOverlap={false}
         />
+      <Sidebar
+      />
+        <button onClick={handleButtonClick}>現在のイベントを追加</button>
+        <button onClick={useGetEvents}>DB一覧取得</button> */}
+      <FullCalendar
+          // ref={calendarRef}
+          // plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,]}
+          // headerToolbar={{
+          //   start: "prev,next today",
+          //   center: "title",
+          //   end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
+          // }}
+          // events={iniEvetnt}
+          // // events={googleEvents}
+          // // 日付セルのフォーマット
+          // eventTimeFormat={{ hour: "2-digit", minute: "2-digit" }}
+          // // カレンダー全体のフォーマット
+          // slotLabelFormat={[{ hour: "2-digit", minute: "2-digit" }]}
+          // // 現在時刻を赤線で表示する
+          // nowIndicator={true}
+          // // initialView="dayGridMonth"
+          // initialView="timeGridWeek"
+          // // 初期イベント追加
+          // // initialEvents={iniEvetnt}
+          // locales={allLocales}
+          // locale="ja"
+          // // 編集可能
+          // selectable={true}
+          // select={handleDateSelect}
+          // // 既にあるカレンダーをクリックした時
+          // editable={true}
+          // eventClick={handleEventClick}
+          // // イベント作成中にプレースホルダーとして表示させる
+          // selectMirror={true}
+          // // 日付の高さを固定
+          // dayMaxEvents={true}
+          // // 日付をクリックで日付へのリンク
+          // navLinks={true}
+          // handleWindowResize={true}
+          // weekends={weekendsVisible}
+          // displayEventTime={false}
+          // eventOverlap={false}
+          />
       </div>
-    </div>
+    </>
   );
-}
+};
 
-export default App;
+export default Calendar;
