@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import FullCalendar  from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import useFirebaseEventList from "./hooks/useFirebaseEventList";
@@ -11,6 +11,10 @@ import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import Modal from "./components/block/Modal";
 import Sidebar from "./Sidebar";
 import { EventApiExtended } from "./types/api/googleCalendar";
+import useGetEvents from "./hooks/useGetEvents";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "./firebase";
+import useFirebase from "./hooks/useGetEvents";
 
 
 const Calendar = () => {
@@ -20,42 +24,42 @@ const Calendar = () => {
     // { title: "イベント1", start: "2023-04-01" },
     // { title: "イベント2", start: "2023-04-03" },
     // { title: "イベント3", start: "2023-04-06" },
-    {
-      id: createEventId(),
-      title: "30minutes",
-      start: todayStr,
-      duration:'00:30',
-    },
-    {
-      id: createEventId(),
-      title: "1hour",
-      start: todayStr,
-      duration:'01:00'
-    },
-    {
-      id: createEventId(),
-      title: "1.5hour",
-      start: todayStr,
-      duration:'01:30'
-    },
-    {
-      id: createEventId(),
-      title: "2hour",
-      start: todayStr,
-      duration:'02:00'
-    },
-    {
-      id: createEventId(),
-      title: "3hour",
-      start: todayStr,
-      duration:'03:00'
-    },
-    {
-      id: createEventId(),
-      title: "4hour",
-      start: todayStr,
-      duration:'04:00'
-    },
+    // {
+    //   id: createEventId(),
+    //   title: "30minutes",
+    //   start: todayStr,
+    //   duration:'00:30',
+    // },
+    // {
+    //   id: createEventId(),
+    //   title: "1hour",
+    //   start: todayStr,
+    //   duration:'01:00'
+    // },
+    // {
+    //   id: createEventId(),
+    //   title: "1.5hour",
+    //   start: todayStr,
+    //   duration:'01:30'
+    // },
+    // {
+    //   id: createEventId(),
+    //   title: "2hour",
+    //   start: todayStr,
+    //   duration:'02:00'
+    // },
+    // {
+    //   id: createEventId(),
+    //   title: "3hour",
+    //   start: todayStr,
+    //   duration:'03:00'
+    // },
+    // {
+    //   id: createEventId(),
+    //   title: "4hour",
+    //   start: todayStr,
+    //   duration:'04:00'
+    // },
   ]);
 
   const [weekendsVisible, setWeekendsVisible] = useState(true);
@@ -66,7 +70,7 @@ const Calendar = () => {
     console.log(events);
     handleEventAdd(events);
   }, []);
-
+  
   // イベント作成
   const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
     let title = prompt("イベントのタイトルを入力してください。")?.trim();
@@ -99,15 +103,22 @@ const Calendar = () => {
     setIsModalOpen(false);
   };
 
+
+  const { iniEvetnt } = useFirebase("events");
+
   return (
     <>
+     <div className="demo-app">
+
       <Modal
         modalStatus={isModalOpen}
         content={modalSelect}
         modalClose={modalClose}
-      />
+        />
       <Sidebar
       />
+        <button onClick={handleButtonClick}>現在のイベントを取得</button>
+        {/* <button onClick={useGetEvents}>DB一覧取得</button> */}
       <FullCalendar
           plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,]}
           headerToolbar={{
@@ -115,7 +126,7 @@ const Calendar = () => {
             center: "title",
             end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
           }}
-          events={events}
+          events={iniEvetnt}
           // events={googleEvents}
           // 日付セルのフォーマット
           eventTimeFormat={{ hour: "2-digit", minute: "2-digit" }}
@@ -126,7 +137,7 @@ const Calendar = () => {
           // initialView="dayGridMonth"
           initialView="timeGridWeek"
           // 初期イベント追加
-          initialEvents={INITIAL_EVENTS}
+          // initialEvents={iniEvetnt}
           locales={allLocales}
           locale="ja"
           // 編集可能
@@ -145,8 +156,9 @@ const Calendar = () => {
           weekends={weekendsVisible}
           displayEventTime={false}
           eventOverlap={false}
-      />
-      <button onClick={handleButtonClick}>現在のイベントを取得</button>
+          />
+   
+      </div>
     </>
   );
 };
