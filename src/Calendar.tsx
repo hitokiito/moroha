@@ -15,7 +15,6 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 import useFirestoreEvents from "./hooks/useFirestoreEvents";
 
-
 const Calendar = () => {
   const calendarRef = useRef<FullCalendar>(null!);
   const todayStr = new Date().toISOString().replace(/T.*$/, ""); // YYYY-MM-DD
@@ -23,7 +22,6 @@ const Calendar = () => {
   ]);
 
   const [weekendsVisible, setWeekendsVisible] = useState(true);
-
   // Googleカレンダー登録簡易ロジック
   const { handleEventAdd } = useFirebaseEventList();
   const handleButtonClick = useCallback(() => {
@@ -82,13 +80,18 @@ const Calendar = () => {
     setIsModalOpen(false);
   };
 
-  const { initialEvents,fetchEventsFromFirestore } = useFirestoreEvents("events");
+  const { initialEvents } = useFirestoreEvents();
   
-  useEffect(() => {
+  const [iniEvents, setIniEvents] = useState<EventApiExtended[]>([
+  ]);
 
-    fetchEventsFromFirestore();
-    console.log("useEffect");
-  }, []);
+  // useEffect(() => {
+  //   let ev = fetchEventsFromFirestore("events")
+  //   setIniEvents(ev);
+  //   console.log(events);
+  //   console.log("initialEvents");
+  // }, []);
+
 
   // useEffect(() => {
   //   setEvents(iniEvetnt);
@@ -117,7 +120,7 @@ const Calendar = () => {
             end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
           }}
           events={initialEvents}
-          // events={googleEvents}
+          // events={events}
           // 日付セルのフォーマット
           eventTimeFormat={{ hour: "2-digit", minute: "2-digit" }}
           // カレンダー全体のフォーマット
@@ -127,7 +130,7 @@ const Calendar = () => {
           // initialView="dayGridMonth"
           initialView="timeGridWeek"
           // 初期イベント追加
-          // initialEvents={iniEvetnt}
+          // initialEvents={initialEvents}
           locales={allLocales}
           locale="ja"
           // 編集可能
@@ -147,7 +150,6 @@ const Calendar = () => {
           displayEventTime={false}
           eventOverlap={false}
           />
-   
       </div>
     </>
   );

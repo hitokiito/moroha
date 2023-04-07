@@ -3,28 +3,28 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 import { EventInput } from "@fullcalendar/core";
 
-const useFirestoreEvents = (data: string) => {
+const useFirestoreEvents = () => {
   const [initialEvents, setInitialEvent] = useState<EventInput[]>([]);
-
-  const fetchEventsFromFirestore = () => { // 引数を取らないように修正
+  const fetchEventsFromFirestore = (data: string) => { // 引数を取らないように修正
+    let results: any = [];
+    console.log("イベント取得メソッド実行")
     const docRef = collection(db, data);
     const unsub = onSnapshot(docRef, (snapshot: { docs: any[]; }) => {
-      let results: any = [];
       snapshot.docs.forEach((doc) => {
         results.push({ ...doc.data(), id: doc.id });
       });
       setInitialEvent(results);
     });
-    return unsub;
+    console.log(results)
+    console.log("イベント取得メソッド終了")
+    return results;
   };
-
   useEffect(() => {
-    const unsub = fetchEventsFromFirestore();
+    const unsub = fetchEventsFromFirestore("events");
     return () => unsub();
   }, []);
-
-  console.log(initialEvents);
-  return { initialEvents, fetchEventsFromFirestore }; // fetchEventsFromFirestoreを追加
+  console.log("コンポーネントが実行");
+  return { initialEvents }; // fetchEventsFromFirestoreを追加
 };
 
 export default useFirestoreEvents;
