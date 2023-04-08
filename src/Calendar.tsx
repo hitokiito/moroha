@@ -23,6 +23,8 @@ const Calendar = () => {
   const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
   // 初期化イベント
   const { initialEvents } = useFirestoreEvents();
+  const [iniEvents, setIniEvents] = useState<EventApiExtended[]>([
+  ]);
   // 詳細画面表示
   // これでモーダル開く
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
@@ -91,9 +93,9 @@ const Calendar = () => {
         ref={calendarRef}
         plugins={[dayGridPlugin, timegrid, interactionPlugin, listPlugin,]}
         headerToolbar={{
-          start: "prev,next today",
-          center: "title",
-          end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
+          start: "title",
+          center: "",
+          end: "prev,today,next,timeGridWeek,listMonth",
         }}
         events={initialEvents}
         allDaySlot={false}
@@ -126,7 +128,17 @@ const Calendar = () => {
         weekends={weekendsVisible}
         displayEventTime={false}
         eventOverlap={false}
-        />
+        // 高さをスクロールしないで表示
+        contentHeight={"auto"}
+          // eventBackgroundColor={'#FFFFFF'}
+        eventBackgroundColor={'#3B82F6'}
+          
+        // eventBorderColor={'#acaba9'}
+        eventBorderColor={'#e4e4e4'}
+        // eventTextColor={'#212121'}
+        eventTextColor={'#FFFFFF'}
+        // aspectRatio={3.6}
+      />
     </div>
     </>
   );
