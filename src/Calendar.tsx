@@ -23,9 +23,7 @@ const Calendar = () => {
   const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
   // 初期化イベント
   const { initialEvents } = useFirestoreEvents();
-  const [iniEvents, setIniEvents] = useState<EventApiExtended[]>([
-  ]);
-  // 詳細画面表示
+  
   // これでモーダル開く
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
     setIsModalOpen(true);
@@ -36,30 +34,6 @@ const Calendar = () => {
     setIsModalOpen(false);
   };
 
-  // Googleカレンダー登録簡易ロジック
-  const { handleEventAdd } = useFirebaseEventList();
-  const handleButtonClick = useCallback(() => {
-    const calendarApi = calendarRef.current.getApi();
-    // 格納用の型を宣言
-    const localEvents :EventApiExtended[] = [];
-    let localEventsList = calendarApi.getEvents();
-    localEventsList?.forEach((event) => {
-      // eventsからeventを取り出し、EventApiExtended型にする。
-      let extendedEvent: EventApiExtended = {
-        id: event.id,
-        title: event.title,
-        start: event.start?.toISOString(),
-        end: event.end?.toISOString(),
-        allDay: event.allDay,
-        backgroundColor: event.backgroundColor,
-        borderColor: event.borderColor,
-        extendedProps: event.extendedProps,
-      };
-      localEvents.push(extendedEvent);
-      console.log(localEvents)
-    });
-    handleEventAdd(localEvents);
-  }, []);
   
   // イベント作成
   const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
@@ -86,8 +60,9 @@ const Calendar = () => {
         content={modalSelect}
         modalClose={modalClose}
         />
-      <Sidebar/>
-      <button onClick={handleButtonClick}>現在のイベントを全て登録</button>
+        <Sidebar
+          calendarRef={calendarRef}
+        />
       {/* <button onClick={useGetEvents}>DB一覧取得</button> */}
       <FullCalendar
         ref={calendarRef}
@@ -129,15 +104,15 @@ const Calendar = () => {
         displayEventTime={false}
         eventOverlap={false}
         // 高さをスクロールしないで表示
-        contentHeight={"auto"}
-          // eventBackgroundColor={'#FFFFFF'}
+        // contentHeight={"auto"}
+        
+        // eventBackgroundColor={'#FFFFFF'}
         eventBackgroundColor={'#3B82F6'}
-          
         // eventBorderColor={'#acaba9'}
         eventBorderColor={'#e4e4e4'}
         // eventTextColor={'#212121'}
         eventTextColor={'#FFFFFF'}
-        // aspectRatio={3.6}
+        aspectRatio={4.0}
       />
     </div>
     </>

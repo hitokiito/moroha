@@ -27,8 +27,8 @@ export const DragArea: React.VFC<Props> = (props) => {
   const { event } = props;
   const css = calculateDuration(event.duration)
   return (
-    <div className={`${css} w-52 bg-blue-500
-      rounded transition-all duration-500 ease-out hover:font-bold hover:bg-blue-300 cursor-grabbing text-white font-medium m-1 p-1
+    <div className={`${css} w-52 bg-blue-500 font-bold
+      rounded transition-all duration-300 ease-out hover:bg-blue-300 cursor-grabbing text-white font-medium m-1 p-1
       flex justify-center
       `}>
         <p>{event.title}</p>

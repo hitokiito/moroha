@@ -41,14 +41,15 @@ export const DragAndDropArea: VFC<Props> = memo(props => {
       <div
         id="external-events"
         style={{
-          padding: "10px",
+          // padding: "10px",
           width: "100%",
           height: "auto",
-          maxHeight: "-webkit-fill-available"
+          // maxHeight: "-webkit-fill-available"
         }}
       >
-        <strong className="flex justify-center"> Events</strong>
+        {/* <strong className="flex justify-center"> Events</strong> */}
         <div className="divide-y bg-blue-800 bg-opacity-10 divide-light-blue-400 rounded m-1 p-1">
+        <strong className="flex justify-center">Task Preset</strong>
           {DragEvents.map((dragEvent) => (
             <div
             className="fc-event flex justify-center "
