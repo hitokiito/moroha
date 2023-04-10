@@ -1,6 +1,9 @@
 import { EventClickArg } from "@fullcalendar/core";
 import React,{ useState,useEffect,VFC } from "react";
 import useUpdateEvent from "../../hooks/useUpdateEvent";
+import { DocumentPlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Button } from "@material-tailwind/react";
+import ModalBtn from "../atoms/ModalBtn";
 
 //モーダルの中身
 type Props = {
@@ -242,8 +245,18 @@ export const ModalContent: React.VFC<Props> = (props) => {
           />
         </label>
         <br />
-        <button className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onDeleteEvent}>削除</button>
-        {/* <button type="button" className={'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2'}onClick={onUpdateEvent}>カレンダー更新</button> */}
+
+        <Button className="flex justify-center w-52 bg-blue-500
+          rounded transition-all duration-300 ease-out hover:bg-blue-300 cursor-grabbing text-white font-medium m-1 p-1
+          flex justify-center" onClick={onEditEvent}>
+          <DocumentPlusIcon strokeWidth={2} className="h-5 w-5 " /> 保存
+        </Button>
+
+        <Button className="flex justify-center w-52 bg-blue-500
+          rounded transition-all duration-300 ease-out hover:bg-blue-300 cursor-grabbing text-white font-medium m-1 p-1
+          flex justify-center" onClick={onDeleteEvent}>
+          <TrashIcon strokeWidth={2} className="h-5 w-5 " /> 削除
+        </Button>
         <button disabled={dateError} className={dateError ? 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2 opacity-50 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2' } onClick={onEditEvent}>編集</button>
       </form>
     </>
