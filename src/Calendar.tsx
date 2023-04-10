@@ -35,6 +35,8 @@ const Calendar = () => {
   };
 
   
+
+  
   // イベント作成
   const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
     let title = prompt("イベントのタイトルを入力してください。")?.trim();
@@ -72,6 +74,13 @@ const Calendar = () => {
           center: "",
           end: "prev,today,next,timeGridWeek,listMonth",
         }}
+        
+        buttonText={{
+          today: '今月',
+          month: '月',
+          list: '予定一覧'
+        }}
+
         events={initialEvents}
         allDaySlot={false}
         // events={events}
@@ -112,7 +121,9 @@ const Calendar = () => {
         eventBorderColor={'#e4e4e4'}
         // eventTextColor={'#212121'}
         eventTextColor={'#FFFFFF'}
-        aspectRatio={4.0}
+        // aspectRatio={4.0}
+        slotMinTime={'01:00:00'}
+        slotMaxTime={'23:00:00'}
       />
     </div>
     </>

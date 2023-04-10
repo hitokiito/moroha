@@ -101,3 +101,38 @@ code {
   outline: none;
   box-shadow: none;
 }
+
+/*　今日の背景 */
+.fc .fc-daygrid-day.fc-day-today {
+  background: none;
+}
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-frame {
+  background: rgb(49, 159, 141);
+}
+
+.fc .fc-timegrid-slot-minor {
+  border-top-style: none;
+  /* border-color: #6699cc; */
+  /* border-color: #97b2cc; */
+  /* border-color: red; */
+    background-image : linear-gradient(to right,#dcdcdc 5px, transparent 2px, transparent 8px);  /* 幅2の線を作る */
+    background-size: 8px 1px;          /* グラデーションの幅・高さを指定 */
+    background-position: left top;  /* 背景の開始位置を指定 */
+    background-repeat: repeat-x;       /* 横向きにのみ繰り返す */
+
+
+}
+.aa {
+    /* background-image : linear-gradient(to right,#000 1px, transparent 2px, transparent 8px);  /* 幅2の線を作る */
+    background-size: 8px 1px;          /* グラデーションの幅・高さを指定 */
+    background-position: left top;  /* 背景の開始位置を指定 */
+    background-repeat: repeat-x;       /* 横向きにのみ繰り返す */
+    border-color: #97b2cc; 
+}
+
+.fc-theme-standard td, .fc-theme-standard th {
+  /* border: 1px solid; */
+  /* border-color: #97b2cc; */
+  border-color: #a9a9a9;
+    /* border-color: red; */
+}
