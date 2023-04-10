@@ -40,7 +40,7 @@ export const Sidebar: React.VFC<Props> = (props) => {
     <div className="demo-app-sidebar">
       <DragAndDropArea />
       <div className="divide-y bg-blue-800 bg-opacity-10 divide-light-blue-400 rounded m-1 p-1">
-      <strong className="flex justify-center">CRUDボタン値一覧</strong>
+        <strong className="flex justify-center">CRUDボタン値一覧</strong>
         <SidebarBtn onClick={handleButtonClick} title={"登録"} />
       </div>
     </div>
