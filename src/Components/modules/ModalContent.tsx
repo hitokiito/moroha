@@ -23,7 +23,7 @@ export const ModalContent: React.VFC<Props> = (props) => {
   const [dateError, setDateError] = useState(false);
 
   useEffect(() => {
-    console.log("ModalContent");
+    // console.log("ModalContent");
     if (content) { 
       setId(content!.event.id ?? "");
       setTitle(content!.event._def.title ?? "")
@@ -190,10 +190,10 @@ export const ModalContent: React.VFC<Props> = (props) => {
     return true;
   }
 
- 
+
   return (
     <>
-      <form>
+      <form className="pt-10">
         <label className={"block"}>
           ID:
           <input type="text"

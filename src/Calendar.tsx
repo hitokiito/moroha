@@ -29,13 +29,15 @@ const Calendar = () => {
     setIsModalOpen(true);
     setModalSelect(clickInfo);
   }, []);
+
   //モーダルを閉じる
   const modalClose = () => {
     setIsModalOpen(false);
   };
-
-  
-
+    //モーダルを閉じる
+  const modalOpen = () => {
+    setIsModalOpen(true);
+  };
   
   // イベント作成
   const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
@@ -60,6 +62,7 @@ const Calendar = () => {
       <Modal
         modalStatus={isModalOpen}
         content={modalSelect}
+        modalOpen={modalOpen}
         modalClose={modalClose}
         />
         <Sidebar
