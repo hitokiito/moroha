@@ -18,26 +18,39 @@ const Calendar = () => {
   const [events, setEvents] = useState<EventApiExtended[]>([
   ]);
   const [weekendsVisible, setWeekendsVisible] = useState(true);
-  // モーダル
-  const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
   const [modalSelect, setModalSelect] = useState<EventClickArg>(); //モーダルの中身の振り分け
   // 初期化イベント
   const { initialEvents } = useFirestoreEvents();
+  
+  // モーダル
+  const [isModalOpen, setIsModalOpen] = useState(false); //モーダルの表示状態
   
   // これでモーダル開く
   const handleEventClick = useCallback((clickInfo: EventClickArg) => {
     setIsModalOpen(true);
     setModalSelect(clickInfo);
+    document.addEventListener('click', modalClose);
+    clickInfo.jsEvent.stopPropagation();
   }, []);
 
   //モーダルを閉じる
-  const modalClose = () => {
+  const modalClose = useCallback(() => {
     setIsModalOpen(false);
-  };
-    //モーダルを閉じる
-  const modalOpen = () => {
-    setIsModalOpen(true);
-  };
+    document.removeEventListener('click', modalClose);
+  },[])
+
+  useEffect(()=>{
+    return ()=>{
+      document.removeEventListener('click',modalClose)
+    }
+  },[modalClose])
+
+  function modalOpen(event:any){
+    setIsModalOpen(true)
+    document.addEventListener('click',modalClose)
+    event.stopPropagation()
+  }
+
   
   // イベント作成
   const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
