@@ -83,9 +83,9 @@ body.is-fixed {
 }
 .modal {
   position: fixed;
-  width: 50%;
+  /* width: 50%;
   height: 50%;
-  background: #fff;
+  background: #fff; */
   left: 30%;
   top: 30%;
   z-index: 100;
@@ -144,8 +144,8 @@ body.is-fixed {
 
 #content{
   z-index:2;
-  width:50%;
-  height: 90%;
+  width: 35%;
+  height: 80%;
   padding: 1em;
   background:#fff;
 }
