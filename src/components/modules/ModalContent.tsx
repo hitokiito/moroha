@@ -192,72 +192,81 @@ export const ModalContent: React.VFC<Props> = (props) => {
 
 
   return (
+
     <>
       <form className="pt-10">
-        <label className={"block"}>
+        <label className={"block text-center "}>
           ID:
           <input type="text"
-            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+            className={"mt-1 block bg-sky-100 w-72 m-auto m-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center"}
             name="id" value={id} onChange={handleChange} />
         </label>
         <br />
-        <label className={"block"}>
+        <label className={"block text-center"}>
           タイトル
           <input type="text"
-            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+            className={"mt-1 block bg-sky-100 w-72 m-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center"}
             name="title" value={title} onChange={handleChange} />
         </label>
         <br />
-      <p className={dateError ? 'text-red-500' : 'invisible'}>開始時間と終了時間を確認してください。</p>
-        <label className={"block"}>
+        <p className={dateError ? 'text-center text-red-500  w-62 font-semibold  m-auto' : 'invisible'}>不正な日時です。</p>
+        <label className={"block text-center"}>
           開始日:
           <input type="date"
-            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
+            className={dateError ?
+            'mt-1 block w-40 m-auto rounded-md text-center text-red-500 bg-red-100 w-62 font-semibold  m-auto' :
+            'mt-1 block bg-sky-100 w-40 m-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center'}
+            // 'mt-1 block bg-sky-100 w-40 m-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center
+            // className={"mt-1 block bg-sky-100 w-40 m-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center"}  
             name="startDate" value={startDate} onChange={handleChange} />
         </label>
         <br />
-        <label className={"block"}>
+        <label className={"block text-center"}>
           開始時間:
           <input type="time"
-            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}
+          className={dateError ?
+            'mt-1 block w-40 m-auto rounded-md text-center text-red-500 bg-red-100 w-62 font-semibold  m-auto' :
+            'mt-1 block bg-sky-100 w-40 m-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center'}
+              
             name="startTime" value={startTime} step="300" onChange={handleChange} />
         </label>
         <br />
-        <label className={"block"}>
+        <label className={"block text-center"}>
           終了日:
           <input type="date"
-            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}                
+          className={dateError ?
+            'mt-1 block w-40 m-auto rounded-md text-center text-red-500 bg-red-100 w-62 font-semibold  m-auto' :
+            'mt-1 block bg-sky-100 w-40 m-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center'}
             name="endDate" value={endDate} onChange={handleChange} />
         </label>
         <br />
-        <label className={"block"}>
+        <label className={"block text-center"}>
           終了時間:
           <input type="time"
-            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
+          className={dateError ?
+            'mt-1 block w-40 m-auto rounded-md text-center text-red-500 bg-red-100 w-62 font-semibold  m-auto' :
+            'mt-1 block bg-sky-100 w-40 m-auto rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-center'}
             name="endTime" value={endTime} onChange={handleChange} />
         </label>
         <br />
-        <label className={"block"}>
-          終日フラグ
-          <input type="checkbox" checked={allDay}
-            className={"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"}  
-            onChange={() => setAllDay(allDay => !allDay) }
-          />
-        </label>
-        <br />
 
-        <Button className="flex justify-center w-52 bg-blue-500
-          rounded transition-all duration-300 ease-out hover:bg-blue-300 cursor-grabbing text-white font-medium m-1 p-1
-          flex justify-center" onClick={onEditEvent}>
-          <DocumentPlusIcon strokeWidth={2} className="h-5 w-5 " /> 保存
-        </Button>
+        <div className="buttonArea flex justify-center">
+          <Button
+            className={dateError ?
+            'flex justify-center w-52 bg-blue-500 rounded text-white font-medium m-1 p-1 flex justify-center opacity-50 cursor-not-allowed':
+            'flex justify-center w-52 bg-blue-500 rounded transition-all duration-300 ease-out hover:bg-blue-300 cursor-grabbing text-white font-medium m-1 p-1 flex justify-center'}
+            onClick={onEditEvent}>
+            <DocumentPlusIcon strokeWidth={2} className="h-5 w-5 " /> 保存
+          </Button>
 
-        <Button className="flex justify-center w-52 bg-blue-500
-          rounded transition-all duration-300 ease-out hover:bg-blue-300 cursor-grabbing text-white font-medium m-1 p-1
-          flex justify-center" onClick={onDeleteEvent}>
-          <TrashIcon strokeWidth={2} className="h-5 w-5 " /> 削除
-        </Button>
-        <button disabled={dateError} className={dateError ? 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2 opacity-50 cursor-not-allowed' : 'bg-gray-600 hover:bg-gray-500 text-white rounded px-4 py-2' } onClick={onEditEvent}>編集</button>
+          <Button
+            className={
+            'flex justify-center w-52 bg-blue-500 rounded transition-all duration-300 ease-out hover:bg-blue-300 cursor-grabbing text-white font-medium m-1 p-1 flex justify-center'}
+            onClick={onDeleteEvent}
+          >
+            <TrashIcon strokeWidth={2} className="h-5 w-5 " /> 削除
+          </Button>
+        </div>
       </form>
     </>
   );
